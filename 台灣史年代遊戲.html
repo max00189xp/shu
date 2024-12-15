@@ -1,177 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>台灣史年代配對遊戲</title>
+    <title>抽籤系統</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 20px;
+            margin-top: 50px;
         }
-        h1 {
-            color: #4CAF50;
-        }
-        #game-container {
-            margin-top: 30px;
-            position: relative;
-            height: 400px;
-            border: 2px solid #ccc;
-            border-radius: 10px;
-            overflow: hidden;
-            background-color: #e6f7ff;
-        }
-        .balloon {
-            position: absolute;
-            width: 100px;
-            height: 140px;
-            background-color: #FFB6C1;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 140px;
-            font-size: 18px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            animation: float 5s linear infinite;
-        }
-        @keyframes float {
-            0% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-20px);
-            }
-            100% {
-                transform: translateY(0px);
-            }
-        }
-        .balloon:hover {
-            transform: scale(1.1);
-        }
-        #score {
-            font-size: 20px;
+        #result {
             margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
         }
         button {
             padding: 10px 20px;
             font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: #4CAF50;
-            color: white;
             cursor: pointer;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <h1>台灣史年代配對遊戲</h1>
-    <p>射擊正確的年代氣球！每題有兩次機會，共十題。</p>
-
-    <div id="game-container"></div>
-
-    <div id="score">分數: 0</div>
-    <button onclick="startGame()">開始遊戲</button>
+    <h1>抽籤系統</h1>
+    <p>點擊按鈕來抽出一個結果！</p>
+    <button onclick="draw()">抽籤</button>
+    <div id="result"></div>
 
     <script>
-        const questions = [
-            { person: "鄭成功", year: "1661" },
-            { person: "劉銘傳", year: "1885" },
-            { person: "蔣渭水", year: "1921" },
-            { person: "鄭芝龍", year: "1645" },
-            { person: "沈葆楨", year: "1874" },
-            { person: "施琅", year: "1683" },
-            { person: "林獻堂", year: "1914" },
-            { person: "鄭用錫", year: "1832" },
-            { person: "吳沙", year: "1796" },
-            { person: "戴潮春", year: "1862" }
-        ];
+        // 抽籤項目，可以自定義
+        const items = ["大吉", "中吉", "小吉", "吉", "末吉", "凶"];
 
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let attemptsLeft = 2;
-
-        function startGame() {
-            currentQuestionIndex = 0;
-            score = 0;
-            document.getElementById('score').innerText = `分數: ${score}`;
-            loadQuestion();
-        }
-
-        function loadQuestion() {
-            const gameContainer = document.getElementById('game-container');
-            gameContainer.innerHTML = '';
-
-            if (currentQuestionIndex >= questions.length) {
-                alert(`遊戲結束！你的最終得分是: ${score}`);
-                return;
-            }
-
-            const question = questions[currentQuestionIndex];
-            const balloons = generateBalloons(question.year);
-
-            const questionText = document.createElement('div');
-            questionText.innerHTML = `<h2>${question.person} 的年代是？</h2>`;
-            gameContainer.appendChild(questionText);
-
-            balloons.forEach(balloon => {
-                gameContainer.appendChild(balloon);
-            });
-        }
-
-        function generateBalloons(correctYear) {
-            const years = new Set([correctYear]);
-
-            while (years.size < 4) {
-                const randomYear = (Math.floor(Math.random() * 500) + 1500).toString();
-                years.add(randomYear);
-            }
-
-            const shuffledYears = Array.from(years).sort(() => Math.random() - 0.5);
-            const balloons = [];
-
-            shuffledYears.forEach(year => {
-                const balloon = document.createElement('div');
-                balloon.className = 'balloon';
-                balloon.style.left = `${Math.random() * 80 + 10}%`;
-                balloon.style.top = `${Math.random() * 60 + 10}%`;
-                balloon.innerText = year;
-                balloon.onclick = () => checkAnswer(year, correctYear);
-                balloons.push(balloon);
-            });
-
-            return balloons;
-        }
-
-        function checkAnswer(selectedYear, correctYear) {
-            if (selectedYear === correctYear) {
-                score += 10;
-                alert('答對了！');
-                nextQuestion();
-            } else {
-                attemptsLeft--;
-                if (attemptsLeft > 0) {
-                    alert(`答錯了！你還有 ${attemptsLeft} 次機會。`);
-                } else {
-                    alert('機會用完，進入下一題。');
-                    nextQuestion();
-                }
-            }
-            document.getElementById('score').innerText = `分數: ${score}`;
-        }
-
-        function nextQuestion() {
-            attemptsLeft = 2;
-            currentQuestionIndex++;
-            loadQuestion();
+        // 抽籤函數
+        function draw() {
+            const randomIndex = Math.floor(Math.random() * items.length);
+            const result = items[randomIndex];
+            document.getElementById("result").textContent = `抽籤結果：${result}`;
         }
     </script>
 </body>
