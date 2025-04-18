@@ -1,43 +1,87 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>抽籤系統</title>
+    <title>數學函數繪圖器</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
         body {
+            display: flex;
             font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
+            margin: 20px;
         }
-        #result {
-            margin-top: 20px;
-            font-size: 24px;
+
+        .input-area {
+            width: 30%;
+            padding: 20px;
+        }
+
+        .plot-area {
+            width: 70%;
+            height: 500px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2em;
+        }
+
+        label {
             font-weight: bold;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
+            display: block;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>抽籤系統</h1>
-    <p>點擊按鈕來抽出一個結果！</p>
-    <button onclick="draw()">抽籤</button>
-    <div id="result"></div>
 
-    <script>
-        // 抽籤項目，可以自定義
-        const items = ["大吉", "中吉", "小吉", "吉", "末吉", "凶"];
+<div class="input-area">
+    <label for="functionInput">請輸入數學函數（例如: Math.sin(x), x*x, Math.exp(-x*x)）:</label>
+    <input type="text" id="functionInput" value="Math.sin(x)">
+    <br><br>
+    <button onclick="drawFunction()">繪製圖形</button>
+</div>
 
-        // 抽籤函數
-        function draw() {
-            const randomIndex = Math.floor(Math.random() * items.length);
-            const result = items[randomIndex];
-            document.getElementById("result").textContent = `抽籤結果：${result}`;
+<div class="plot-area" id="graph"></div>
+
+<script>
+    function drawFunction() {
+        const funcStr = document.getElementById("functionInput").value;
+        const xValues = [];
+        const yValues = [];
+
+        for (let x = -10; x <= 10; x += 0.1) {
+            try {
+                const y = eval(funcStr);
+                xValues.push(x);
+                yValues.push(y);
+            } catch (err) {
+                alert("函數錯誤，請確認語法正確！");
+                return;
+            }
         }
-    </script>
+
+        const trace = {
+            x: xValues,
+            y: yValues,
+            type: 'scatter',
+            mode: 'lines',
+            line: {color: 'blue'}
+        };
+
+        const layout = {
+            title: '函數圖形',
+            xaxis: {title: 'x'},
+            yaxis: {title: 'f(x)'},
+        };
+
+        Plotly.newPlot('graph', [trace], layout);
+    }
+
+    // 預設載入一次
+    drawFunction();
+</script>
+
 </body>
 </html>
